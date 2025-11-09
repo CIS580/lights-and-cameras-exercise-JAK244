@@ -4,10 +4,14 @@ using Microsoft.Xna.Framework.Input;
 
 namespace LightingAndCamerasExample
 {
+    
     public class Game1 : Game
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
+        Crate[] crate;
+        FPSCamera camera;
+
 
         public Game1()
         {
@@ -26,6 +30,17 @@ namespace LightingAndCamerasExample
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
+            crate = new Crate[] {
+                new Crate(this, CrateType.DarkCross, Matrix.Identity),
+                new Crate(this, CrateType.Slats, Matrix.CreateTranslation(4, 0, 5)),
+                new Crate(this, CrateType.Cross, Matrix.CreateTranslation(-8, 0, 3)),
+                new Crate(this, CrateType.DarkCross, Matrix.CreateRotationY(MathHelper.PiOver4) * Matrix.CreateTranslation(1, 0, 7)),
+                new Crate(this, CrateType.Slats, Matrix.CreateTranslation(3, 0, -3)),
+                new Crate(this, CrateType.Cross, Matrix.CreateRotationY(3) * Matrix.CreateTranslation(3, 2, -3))
+            };
+
+            // Initialize the camera 
+            camera = new FPSCamera(this, new Vector3(0, 3, 10));
 
             // TODO: use this.Content to load your game content here
         }
@@ -37,12 +52,21 @@ namespace LightingAndCamerasExample
 
             // TODO: Add your update logic here
 
+            // Update the camera 
+            camera.Update(gameTime);
+
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
+
+            // Draw some crates
+            foreach (Crate crate in crate)
+            {
+                crate.Draw(camera);
+            }
 
             // TODO: Add your drawing code here
 
